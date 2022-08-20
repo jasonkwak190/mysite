@@ -1,9 +1,20 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import Question
+from django.template import loader
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello World.")
+    # 1.
+    # latest_question_list = Question.objects.order_by('-pub_date')[:5] #5개 출판일자 별로 나열
+    # output = ', '.join([q.question_text for q in latest_question_list]) #콤마로 연결하기
+    # return HttpResponse(output)
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    template = loader.get_template('polls/index.html')
+    context = {
+        'latest_question_list': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
 
 def detail(request, question_id):
     return HttpResponse("You're looking at question %s." % question_id)
